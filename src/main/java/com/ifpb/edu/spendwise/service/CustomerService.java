@@ -5,16 +5,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ifpb.edu.spendwise.exception.customer.CustomerCreationException;
+import com.ifpb.edu.spendwise.exception.customer.EmailAlreadyExistsException;
+import com.ifpb.edu.spendwise.exception.customer.InvalidCustomerDataException;
 import com.ifpb.edu.spendwise.model.Account;
 import com.ifpb.edu.spendwise.model.Customer;
 import com.ifpb.edu.spendwise.model.Transaction;
+import com.ifpb.edu.spendwise.model.dto.CreateCustomerRequest;
 import com.ifpb.edu.spendwise.repository.AccountRepository;
 import com.ifpb.edu.spendwise.repository.CustomerRepository;
 import com.ifpb.edu.spendwise.repository.TransactionRepository;
+import com.ifpb.edu.spendwise.util.LoggerHandle;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
 
 @Service
 public class CustomerService {
@@ -28,12 +32,39 @@ public class CustomerService {
     @Autowired
     private TransactionRepository transactionRepository;
 
-    public Customer createCustomer(Customer customer) throws Exception {
-        if (emailExists(customer.getEmail())) {
-            throw new Exception("Email already in use");
+    public Customer createCustomer(CreateCustomerRequest newCustomer) {
+
+        LoggerHandle.info("Starting customer creation process for email: {}".formatted(newCustomer.getEmail()));
+
+        try {
+
+            validateCustomerRequest(newCustomer);
+
+            validateEmailUniqueness(newCustomer.getEmail());
+
+            Customer customer = buildCustomerFromRequest(newCustomer);
+
+            encryptPassword(customer);
+
+            Customer savedCustomer = customerRepository.save(customer);
+
+            return savedCustomer;
+
+        } catch (EmailAlreadyExistsException | InvalidCustomerDataException ex) {
+
+            LoggerHandle.warning("Fail to create customer with email: " + newCustomer.getEmail());
+            LoggerHandle.warning("Customer exception failed: " + ex.getMessage());
+            LoggerHandle.erro(ex);
+
+            throw ex;
+        } catch (Exception ex) {
+
+            LoggerHandle.warning("Unexpected error during customer creation for email: " + newCustomer.getEmail());
+            LoggerHandle.info("Customer exception failed: " + ex.getMessage());
+            LoggerHandle.erro(ex);
+
+            throw new CustomerCreationException("Failed to create customer", ex);
         }
-        customer.setPassword(AuthService.hashPassword(customer.getPassword()));
-        return customerRepository.save(customer);
     }
 
     @Transactional(readOnly = true)
@@ -93,7 +124,7 @@ public class CustomerService {
 
     // @Transactional(readOnly = true)
     // public List<Customer> findCustomersByCriteria(String criteria) {
-    //     return customerRepository.findByEmail(criteria);
+    // return customerRepository.findByEmail(criteria);
     // }
 
     public void deleteCustomerAndData(Long customerId) {
@@ -107,8 +138,6 @@ public class CustomerService {
         customerRepository.deleteById(customerId);
     }
 
-   
-
     @Transactional(readOnly = true)
     public int countAccounts(Long customerId) {
         return accountRepository.countByCustomerId(customerId);
@@ -119,9 +148,39 @@ public class CustomerService {
         return transactionRepository.countByCustomerId(customerId);
     }
 
+    private void validateEmailUniqueness(String email) {
+        if (customerRepository.existsByEmailIgnoreCase(email)) {
+            throw new EmailAlreadyExistsException("Email already in use: " + email);
+        }
+    }
+
+    private void validateCustomerRequest(CreateCustomerRequest request) {
+        if (request == null) {
+            throw new InvalidCustomerDataException("Customer request cannot be null");
+        }
+    }
+
+    private Customer buildCustomerFromRequest(CreateCustomerRequest request) {
+        return Customer.builder()
+                .name(request.getName().trim())
+                .email(request.getEmail().toLowerCase().trim())
+                .password(request.getPassword())
+                .build();
+    }
+
+    private void encryptPassword(Customer customer) {
+        try {
+            String hashedPassword = AuthService.hashPassword(customer.getPassword());
+            customer.setPassword(hashedPassword);
+        } catch (Exception e) {
+            throw new CustomerCreationException("Failed to encrypt password", e);
+        }
+    }
+
     // @Transactional(readOnly = true)
     // public BigDecimal calculateWealth(Long customerId) {
-    //     return transactionRepository.sumBalanceByCustomerId(customerId).orElse(BigDecimal.ZERO);
+    // return
+    // transactionRepository.sumBalanceByCustomerId(customerId).orElse(BigDecimal.ZERO);
     // }
 
 }

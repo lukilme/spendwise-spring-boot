@@ -44,5 +44,7 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     List<Customer> findByAccountsIsNotEmpty();
 
     Page<Customer> findByRole(UserRoles role_requested, PageRequest pageable);
+
+    boolean existsByEmailIgnoreCase(String email);
 }
 

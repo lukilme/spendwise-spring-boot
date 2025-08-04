@@ -1,15 +1,15 @@
-INSERT INTO tb_customer (name, email, password, active, role_customer)
-VALUES ('Administrator', 'a@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR'),
-       ('John Doe', 'john.doe@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR'),
-       ('Jane Smith', 'jane.smith@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON'),
-       ('Robert Johnson', 'robert.j@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON'),
-       ('Inactive User', 'inactive@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', FALSE, 'COMMON'),
-       ('Minimal Data', 'minimal@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR'),
-       ('Emily Davis', 'emily.davis@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON'),
-       ('Michael Thompson', 'michael.t@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON'),
-       ('Lisa Martin', 'lisa.martin@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', FALSE, 'COMMON'),
-       ('Carlos Silva', 'carlos.silva@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR'),
-       ('Ana Souza', 'ana.souza@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON');
+INSERT INTO tb_customer (name, email, password, active, role_customer, created_at)
+VALUES ('Administrator', 'a@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR', '2025-08-04T10:00:00'),
+       ('John Doe', 'john.doe@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR', '2025-08-04T10:00:00'),
+       ('Jane Smith', 'jane.smith@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON', '2025-08-04T10:00:00'),
+       ('Robert Johnson', 'robert.j@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON','2025-08-04T10:00:00'),
+       ('Inactive User', 'inactive@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', FALSE, 'COMMON','2025-08-04T10:00:00'),
+       ('Minimal Data', 'minimal@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR','2025-08-04T10:00:00'),
+       ('Emily Davis', 'emily.davis@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON','2025-08-04T10:00:00'),
+       ('Michael Thompson', 'michael.t@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON','2025-08-04T10:00:00'),
+       ('Lisa Martin', 'lisa.martin@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', FALSE, 'COMMON', '2025-08-04T10:00:00'),
+       ('Carlos Silva', 'carlos.silva@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'ADMINISTRATOR','2025-08-04T10:00:00'),
+       ('Ana Souza', 'ana.souza@example.com', '$2a$10$TSjLxFCvygElWcakRmujieW2dtdP6.ldrcBo4c6TRe85IMWenKEoi', TRUE, 'COMMON','2025-08-04T10:00:00');
 
 
 INSERT INTO tb_account (name, balance, account_type, customer_id, expiration_date, is_active)

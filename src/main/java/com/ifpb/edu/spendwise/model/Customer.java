@@ -10,6 +10,7 @@ import lombok.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import com.ifpb.edu.spendwise.model.enumerator.StatusCustomer;
@@ -34,7 +35,7 @@ public class Customer implements Serializable {
     private Long id;
 
     @NotBlank(message = "Name is required")
-    @Size(max = 100, min = 5, message = "Name must not exceed 100 characters and not be less than 5")
+    @Size(max = 100, min = 6, message = "Name must not exceed 100 characters and not be less than 6")
     @Schema(description = "Full name of the customer", example = "John Doe")
     private String name;
 
@@ -70,4 +71,13 @@ public class Customer implements Serializable {
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @Schema(description = "List of accounts associated with the customer", accessMode = Schema.AccessMode.READ_ONLY)
     private List<Account> accounts;
+
+    @Column(nullable = false, updatable = false)
+    @Schema(description = "Date and time of creation", example = "2025-07-22T08:30:00", accessMode = Schema.AccessMode.READ_ONLY)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+    }
 }
