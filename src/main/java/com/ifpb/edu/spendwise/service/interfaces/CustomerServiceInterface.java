@@ -1,64 +1,46 @@
 package com.ifpb.edu.spendwise.service.interfaces;
 
-import java.util.Optional;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ifpb.edu.spendwise.exception.customer.CustomerCreationException;
+import com.ifpb.edu.spendwise.exception.customer.EmailAlreadyExistsException;
+import com.ifpb.edu.spendwise.exception.customer.InvalidCustomerDataException;
 import com.ifpb.edu.spendwise.model.Customer;
+import com.ifpb.edu.spendwise.model.dto.CreateCustomerRequest;
 
 public interface CustomerServiceInterface {
-    
+
     /**
-     * Salva um novo cliente
+     * Creates a new customer in the system
+     * 
+     * @param customerRequest the customer data to be created
+     * @return the created customer with generated ID
+     * @throws CustomerCreationException    if customer creation fails
+     * @throws EmailAlreadyExistsException  if email is already in use
+     * @throws InvalidCustomerDataException if customer data is invalid
      */
-    Customer save(Customer customer);
-    
+    Customer createCustomer(CreateCustomerRequest newCustomer);
+
     /**
-     * Atualiza um cliente existente
+     * Counts the number of accounts associated with a given customer ID.
+     * This operation is read-only and transactional.
+     * 
+     * @param customerId the ID of the customer to count accounts for
+     * @return the number of accounts associated with the customer
+     * @throws DataAccessException if there's an issue accessing the database
      */
-    Customer update(Customer customer);
-    
+    @Transactional(readOnly = true)
+    int countAccounts(Long customerId);
+
     /**
-     * Busca cliente por ID
+     * Counts the number of transactions associated with a given customer ID.
+     * This operation is read-only and transactional.
+     * 
+     * @param customerId the ID of the customer to count transactions for
+     * @return the number of transactions associated with the customer
+     * @throws DataAccessException if there's an issue accessing the database
      */
-    Optional<Customer> getCustomerById(Long id);
-    
-    /**
-     * Busca cliente por email
-     */
-    Optional<Customer> findByEmail(String email);
-    
-    /**
-     * Lista todos os clientes com paginação
-     */
-    Page<Customer> findAll(Pageable pageable);
-    
-    /**
-     * Busca clientes por nome ou email
-     */
-    Page<Customer> searchByNameOrEmail(String term, Pageable pageable);
-    
-    /**
-     * Deleta cliente por ID
-     */
-    void deleteById(Long id);
-    
-    /**
-     * Verifica se cliente existe por email
-     */
-    boolean existsByEmail(String email);
-    
-    /**
-     * Ativa/desativa cliente
-     */
-    Customer toggleActiveStatus(Long id);
-    
-    /**
-     * Busca clientes ativos
-     */
-    Page<Customer> findByActiveTrue(Pageable pageable);
-    
-    /**
-     * Altera senha do cliente
-     */
-    void changePassword(Long customerId, String currentPassword, String newPassword);
+    @Transactional(readOnly = true)
+    int countTransactions(Long customerId);
 }

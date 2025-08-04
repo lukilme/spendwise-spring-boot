@@ -1,11 +1,11 @@
 package com.ifpb.edu.spendwise.service;
 
-import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ifpb.edu.spendwise.exception.customer.CustomerCreationException;
+import com.ifpb.edu.spendwise.exception.customer.CustomerNotFoundException;
 import com.ifpb.edu.spendwise.exception.customer.EmailAlreadyExistsException;
 import com.ifpb.edu.spendwise.exception.customer.InvalidCustomerDataException;
 import com.ifpb.edu.spendwise.model.Account;
@@ -15,13 +15,14 @@ import com.ifpb.edu.spendwise.model.dto.CreateCustomerRequest;
 import com.ifpb.edu.spendwise.repository.AccountRepository;
 import com.ifpb.edu.spendwise.repository.CustomerRepository;
 import com.ifpb.edu.spendwise.repository.TransactionRepository;
+import com.ifpb.edu.spendwise.service.interfaces.CustomerServiceInterface;
 import com.ifpb.edu.spendwise.util.LoggerHandle;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class CustomerService {
+public class CustomerService implements CustomerServiceInterface {
 
     @Autowired
     private CustomerRepository customerRepository;
@@ -70,13 +71,13 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public Customer findById(Long id) {
         return customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id " + id));
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id " + id));
     }
 
     @Transactional(readOnly = true)
     public Customer findByEmail(String email) {
         return customerRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with email " + email));
+                .orElseThrow(() -> new CustomerNotFoundException("Customer not found with email " + email));
     }
 
     public Customer updateCustomer(Long id, Customer customer) {
@@ -122,11 +123,6 @@ public class CustomerService {
         return customerRepository.findByAccountsIsNotEmpty();
     }
 
-    // @Transactional(readOnly = true)
-    // public List<Customer> findCustomersByCriteria(String criteria) {
-    // return customerRepository.findByEmail(criteria);
-    // }
-
     public void deleteCustomerAndData(Long customerId) {
         // delete transactions and accounts first
         List<Account> accounts = accountRepository.findByCustomerId(customerId);
@@ -147,6 +143,18 @@ public class CustomerService {
     public int countTransactions(Long customerId) {
         return transactionRepository.countByCustomerId(customerId);
     }
+
+
+
+
+
+
+    // ====================PRIVATE-METHODS====================
+
+
+
+
+
 
     private void validateEmailUniqueness(String email) {
         if (customerRepository.existsByEmailIgnoreCase(email)) {
@@ -170,10 +178,13 @@ public class CustomerService {
 
     private void encryptPassword(Customer customer) {
         try {
+            LoggerHandle.warning("Encrypting password for customer: " + customer.getEmail());
             String hashedPassword = AuthService.hashPassword(customer.getPassword());
             customer.setPassword(hashedPassword);
         } catch (Exception e) {
-            throw new CustomerCreationException("Failed to encrypt password", e);
+            String errorMessage = String.format("Failed to encrypt password for customer: %s", customer.getEmail());
+            LoggerHandle.erro(e);
+            throw new CustomerCreationException(errorMessage, e);
         }
     }
 
