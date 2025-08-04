@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('Login')}">
+<head>
+    <title>Login - Painel do Cliente</title>
+</head>
+<body>
+    <section class="max-w-md mb-3 mx-auto mt-12 p-6 bg-white rounded-lg shadow-sm">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6">Login</h1>
+        
+        <form th:action="@{/auth/login}" th:object="${customerLoginCredential}" method="post" class="space-y-4">
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="text" th:field="*{email}" id="email"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" 
+                      class="text-sm text-red-600"></span>
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" th:field="*{password}" id="password"
+                       class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500" />
+                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}" 
+                      class="text-sm text-red-600"></span>
+            </div>
+
+            <div>
+                <button type="submit" 
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Login
+                </button>
+            </div>
+        </form>
+
+        <div class="mt-4 text-sm text-gray-600">
+            Não tem uma conta? 
+            <a th:href="@{/customer/form}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                Registre-se aqui
+            </a>
+        </div>
+
+        <p th:if="${message}" th:text="${message}" 
+           class="mt-4 text-center text-sm" 
+           th:classappend="${message.startsWith('Error')} ? 'text-red-600' : 'text-green-600'"></p>
+    </section>
+</body>
+</html>

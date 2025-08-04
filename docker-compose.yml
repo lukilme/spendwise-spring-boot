@@ -1,0 +1,45 @@
+services:
+  app:
+    build: .
+    container_name: spring-boot-app
+    ports:
+      - "8081:8080"
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/database
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/database
+    depends_on:
+      - postgres
+      - mongo
+      
+  test:
+    build: .
+    volumes:
+      - .:/app
+      - ~/.m2:/root/.m2
+    command: ["./mvnw", "test"]
+  postgres:
+    image: postgres:17
+    container_name: postgres
+    restart: unless-stopped
+    volumes:
+      - ./postgres-data:/data/db
+    environment:
+      POSTGRES_DB: database
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./mongo-data:/data/db
+    restart: unless-stopped

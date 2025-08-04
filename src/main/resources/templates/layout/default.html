@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body class="bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+
+    <div th:fragment="layout(title)" class="min-h-screen flex flex-col">
+
+        <div th:replace="~{fragments/metadata :: metadata(${title})}"></div>
+
+        <header class="bg-white dark:bg-gray-800 shadow-sm">
+            <div th:replace="~{fragments/header :: header}"></div>
+        </header>
+
+        <main class="flex-grow bg-gray-50 dark:bg-gray-900">
+            <div th:replace="~{::section}"></div>
+        </main>
+
+        <footer class="bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+            <div th:replace="~{fragments/footer :: footer}"></div>
+        </footer>
+    </div>
+</body>
+</html>

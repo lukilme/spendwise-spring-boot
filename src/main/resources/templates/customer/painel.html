@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="~{layout/default :: layout('Painel')}" class="dark">
+
+<head>
+    <title>Painel do Cliente</title>
+</head>
+
+<body class="bg-gray-50 dark:bg-gray-900">
+
+    <section
+        class="max-w-4xl my-4 mx-auto p-6 bg-white rounded-lg shadow-md dark:bg-gray-800 dark:border dark:border-gray-700">
+        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Bem-vindo ao <span
+                th:text="${customer.name}"></span></h2>
+
+        <section>
+            <h3 class="text-xl font-semibold text-gray-700 dark:text-gray-300 mb-4">Formulário de criar conta</h3>
+
+            <form th:action="@{/account}" th:object="${account}" method="post" class="space-y-6" id="accountForm">
+                <div th:if="${success}"
+                    class="p-4 mb-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800"
+                    role="alert">
+                    <span th:text="${success}"></span>
+                </div>
+                <div th:if="${error}"
+                    class="p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
+                    role="alert">
+                    <span th:text="${error}"></span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nome da
+                            Conta*</label>
+                        <input type="text" id="name" th:field="*{name}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}"
+                            class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
+                        <p th:unless="${#fields.hasErrors('name')}"
+                            class="mt-1 text-sm text-gray-500 dark:text-gray-400">Nome para identificar sua conta</p>
+                    </div>
+
+                    <div>
+                        <label for="accountType" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo
+                            de Conta*</label>
+                        <select id="accountType" th:field="*{accountType}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                            <option value="">Selecione um tipo</option>
+                            <option th:each="type : ${T(com.ifpb.edu.spendwise.model.enumerator.AccountTypes).values()}"
+                                th:value="${type}" th:text="${type}"></option>
+                        </select>
+
+
+                        <p th:if="${#fields.hasErrors('accountType')}" th:errors="*{accountType}"
+                            class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
+                        <p th:unless="${#fields.hasErrors('accountType')}"
+                            class="mt-1 text-sm text-gray-500 dark:text-gray-400">Crédito ou Débito</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="balance" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Saldo
+                            Inicial</label>
+                        <input type="number" id="balance" th:field="*{balance}" step="0.01" value="0.00"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <p th:if="${#fields.hasErrors('balance')}" th:errors="*{balance}"
+                            class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
+                        <p th:unless="${#fields.hasErrors('balance')}"
+                            class="mt-1 text-sm text-gray-500 dark:text-gray-400">Saldo inicial da conta</p>
+                    </div>
+
+                    <div id="expirationDateField" style="display: none;">
+                        <label for="expirationDate"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Data de Expiração</label>
+                        <input type="date" id="expirationDate" th:field="*{expirationDate}"
+                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400">
+                        <p th:if="${#fields.hasErrors('expirationDate')}" th:errors="*{expirationDate}"
+                            class="mt-1 text-sm text-red-600 dark:text-red-400"></p>
+                        <p th:unless="${#fields.hasErrors('expirationDate')}"
+                            class="mt-1 text-sm text-gray-500 dark:text-gray-400">Validade do cartão</p>
+                    </div>
+                </div>
+
+                <input type="hidden" th:field="*{customer.id}">
+
+                <div class="pt-4 md:col-span-2">
+                    <button type="submit"
+                        class="w-full md:w-auto flex justify-center py-2 px-6 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-700 dark:hover:bg-indigo-600 dark:focus:ring-indigo-500">
+                        Criar Conta
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <form th:action="@{/customer/painel}" method="get" class="mb-6 flex flex-col gap-4">
+            <div class="flex flex-wrap items-center gap-4 content-center">
+                <div class="flex items-center">
+                    <input type="checkbox" name="categoria" value="CREDIT" id="credito"
+                        th:checked="${filtroCategorias != null and filtroCategorias.contains(T(com.ifpb.edu.spendwise.model.enumerator.AccountTypes).CREDIT)}"
+                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600" />
+                    <label for="credito" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Crédito</label>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" name="categoria" value="DEBIT" id="debito"
+                        th:checked="${filtroCategorias != null and filtroCategorias.contains(T(com.ifpb.edu.spendwise.model.enumerator.AccountTypes).DEBIT)}"
+                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600" />
+                    <label for="debito" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Débito</label>
+                </div>
+                <select name="order"
+                    class="rounded-md border-gray-300 py-1 pl-2 pr-8 text-base focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                    <option value="asc" th:selected="${order=='asc'}">Data ↑</option>
+                    <option value="desc" th:selected="${order=='desc'}">Data ↓</option>
+                </select>
+                <button type="submit"
+                    class="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:bg-indigo-700 dark:hover:bg-indigo-600">
+                    Filtrar/Ordenar
+                </button>
+            </div>
+            <div class="flex items-center justify-between mt-4">
+                <div class="text-sm text-gray-500 dark:text-gray-400">
+                    Mostrando<span th:text="${inicio}">1</span> a <span th:text="${fim}">10</span>de
+                    <span th:text="${totalItems}">100</span> resultados
+                </div>
+
+                <div class="flex space-x-1">
+                    <button th:if="${currentPage > 0}" type="submit" name="page" th:value="${currentPage - 1}"
+                        class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                        Anterior
+                    </button>
+                    <button th:unless="${currentPage > 0}" disabled
+                        class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500">
+                        Anterior
+                    </button>
+                    <div class="hidden sm:flex space-x-1">
+                        <template th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                            <button th:if="${i == currentPage}" disabled
+                                class="px-3 py-1 rounded border border-indigo-500 bg-indigo-50 text-indigo-600 dark:bg-indigo-700 dark:text-white dark:border-indigo-600">
+                                <span th:text="${i + 1}">1</span>
+                            </button>
+                            <button th:unless="${i == currentPage}" type="submit" name="page" th:value="${i}"
+                                class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                                <span th:text="${i + 1}">1</span>
+                            </button>
+                        </template>
+                    </div>
+                    <button th:if="${currentPage < totalPages - 1}" type="submit" name="page"
+                        th:value="${currentPage + 1}"
+                        class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-600">
+                        Próximo
+                    </button>
+                    <button th:unless="${currentPage < totalPages - 1}" disabled
+                        class="px-3 py-1 rounded border border-gray-300 bg-white text-gray-400 cursor-not-allowed dark:bg-gray-800 dark:border-gray-700 dark:text-gray-500">
+                        Próximo
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <div th:each="account : ${accounts}"
+                class="flex flex-col rounded-lg border border-gray-200 bg-white shadow-sm dark:bg-gray-800 dark:border-gray-700">
+                <div class="flex flex-1 flex-col p-4">
+                    <a th:href="@{/account(id=${account.id})}"
+                        class="mb-2 text-lg font-medium text-gray-900 dark:text-white" th:text="${account.name}">Travel
+                        Fund</a>
+                    <div class="flex-1 space-y-1 text-gray-600 dark:text-gray-300">
+                        <p>Saldo:
+                            <span
+                                th:class="${account.balance.signum() == -1 ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}"
+                                th:text="${#numbers.formatDecimal(account.balance, 1, 2, 'COMMA')}">
+                                3.200,00
+                            </span>
+                        </p>
+                        <p>Tipo: <span th:text="${account.accountType}">DEBIT</span></p>
+                        <p>Cliente: <span th:text="${account.customer.name}">Jane Smith</span></p>
+                        <p th:if="${account.expirationDate != null}">
+                            Validade: <span
+                                th:text="${#temporals.format(account.expirationDate, 'dd/MM/yyyy')}">01/04/2027</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

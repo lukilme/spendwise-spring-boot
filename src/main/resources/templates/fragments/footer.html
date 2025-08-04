@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="footer" class="bg-white border-t border-gray-200 dark:bg-gray-800 dark:border-gray-700 mt-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+                <div class="mb-4 md:mb-0">
+                    <p class="text-gray-600 dark:text-gray-300">&copy; 2025 Spendwise. All rights reserved.</p>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Developed by Luis Kilmer</p>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end space-y-2">
+                    <div class="flex space-x-4">
+                        <a href="/"
+                            class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">Privacy
+                            Policy</a>
+                        <a href="/"
+                            class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">Terms
+                            of Service</a>
+                        <a href="/"
+                            class="text-sm text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 transition-colors">Contact
+                            Us</a>
+                    </div>
+                    <div class="text-xs text-gray-400 dark:text-gray-500">
+                        <span th:text="${#dates.format(#dates.createNow(), 'yyyy-MM-dd HH:mm')}"></span>
+                        <span th:if="${customer != null}" class="ml-2">
+                            <span th:if="${customer.getRole() == 'ADMINISTRATOR'}">ADM Mode</span>
+                            <span th:if="${customer.getRole() == 'COMMON'}">Common Mode</span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700 text-center">
+                <p class="text-xs text-gray-500 dark:text-gray-400">
+                    Spendwise is a financial management tool. This product is for demonstration purposes only.
+                    Not affiliated with any financial institution, only BACEN and Banco Central Europeu (BCE).
+                </p>
+                <div class="mt-2 text-xs text-gray-400 dark:text-gray-500">
+                    <span th:text="'Version: ' + ${@environment.getProperty('app.version', '1.0.0')}"></span>
+                    <span th:if="${currentUri}" class="ml-2">| Current route: <span
+                            th:text="${currentUri}"></span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

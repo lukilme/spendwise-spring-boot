@@ -1,0 +1,78 @@
+@startuml relacional_diagram
+!define table(x) class x << (T,#FFAAAA) >>
+!define enum(x) class x << (E,#AAAAFF) >>
+
+' Entidades principais
+table(Usuario) {
+  +id_usuario : int
+  nome : string
+  email : string
+  senha : string
+  tipo : enum_TipoUsuario
+  status : enum_StatusUsuario
+}
+
+enum(enum_TipoUsuario) {
+  DEFAULT
+  CORRENTISTA
+  ADMINISTRADOR
+}
+
+enum(enum_StatusUsuario) {
+  ATIVO
+  BLOQUEADO
+}
+
+table(Conta) {
+  +id_conta : int
+  id_usuario : int
+  nome : string
+  tipo : enum_TipoConta
+}
+
+enum(enum_TipoConta) {
+  CORRENTE
+  CARTAO
+}
+
+table(Transacao) {
+  +id_transacao : int
+  id_conta : int
+  id_categoria : int
+  data : date
+  valor : decimal
+  descricao : string
+}
+
+table(Comentario) {
+  +id_comentario : int
+  id_transacao : int
+  id_usuario : int
+  texto : string
+  data : datetime
+}
+
+table(Categoria) {
+  +id_categoria : int
+  nome : string
+  natureza : enum_Natureza
+  ordem : int
+  ativa : boolean
+}
+
+enum(enum_Natureza) {
+  ENTRADA
+  SAIDA
+  INVESTIMENTO
+}
+
+' Relacionamentos
+Usuario "1" -- "0..*" Conta : possui >
+Conta "1" -- "0..*" Transacao : contém >
+Transacao "1" -- "0..*" Comentario : tem >
+Categoria "1" -- "0..*" Transacao : classifica >
+
+' Ações administrativas
+Usuario "1" -- "0..*" Categoria : cria/edita >
+Usuario "1" -- "0..*" Usuario : gerencia >
+@enduml

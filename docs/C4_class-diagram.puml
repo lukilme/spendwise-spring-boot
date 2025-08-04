@@ -1,0 +1,140 @@
+@startuml class_diagram
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classAttributeFontSize 11
+skinparam classOperationFontSize 11
+
+' === Enums ===
+enum TipoTransacaoEnum {
+  CREDITO
+  DEBITO
+}
+
+enum NaturezaEnum {
+  ENTRADA
+  SAIDA
+  INVESTIMENTO
+}
+
+' === MODEL ===
+package "Model" {
+  abstract class Usuario {
+    - id: Long
+    - nome: String
+    - email: String
+    - senha: String
+    + login(): void
+  }
+
+  class Correntista {
+    - contas: List<Conta>
+    - bloqueado: boolean
+    + criarConta(): void
+    + criarTransacao(): void
+    + verExtrato(): void
+  }
+
+  class Administrador {
+    + gerenciarCategoria(): void
+    + bloquearUsuario(): void
+  }
+
+  class Conta {
+    - id: Long
+    - nome: String
+    - saldo: Long
+    - tipo: String
+    - transacoes: List<Transacao>
+    - validade: DateTime
+    + adicionarTransacao(): void
+    + calcularSaldo(): Long
+  }
+
+  class ContaCorrente
+  class CartaoCredito {
+    - limite: Long
+  }
+
+  class Transacao {
+    - id: Long
+    - valor: Long
+    - data: LocalDateTime
+    - tipo: TipoTransacaoEnum
+    - categoria: Categoria
+    - comentarios: List<Comentario>
+    + editar(): void
+    + adicionarComentario(): void
+  }
+
+  class Comentario {
+    - id: Long
+    - texto: String
+    - data: LocalDateTime
+  }
+
+  class Categoria {
+    - id: String
+    - nome: String
+    - natureza: NaturezaEnum
+    - ordem: int
+    - ativa: boolean
+    + editar(): void
+  }
+
+  Usuario <|-- Correntista
+  Usuario <|-- Administrador
+
+  Transacao <|-- CartaoCredito
+  Transacao <|-- ContaCorrente
+
+  Correntista "1" o-- "0..*" Conta 
+  Conta "1" o-- "0..*" Transacao 
+  Transacao "1" o-- "0..*" Comentario
+  Transacao "1" --> "1" Categoria
+}
+
+' === CONTROLLER ===
+package "Controller" {
+  class UsuarioController {
+    + autenticar(): void
+    + logout(): void
+  }
+
+  class ContaController {
+    + criarConta(): void
+    + listarContas(): List<Conta>
+  }
+
+  class TransacaoController {
+    + criarTransacao(): void
+    + listarTransacoes(): List<Transacao>
+  }
+
+  class CategoriaController {
+    + listarCategorias(): List<Categoria>
+    + editarCategoria(): void
+  }
+}
+
+' === VIEW ===
+package "View" {
+  class TelaLogin
+  class TelaDashboard
+  class FormularioTransacao
+  class FormularioConta
+  class ListaCategorias
+}
+
+' Exemplo de interação Controller <-> Model
+UsuarioController --> Usuario
+ContaController --> Conta
+TransacaoController --> Transacao
+CategoriaController --> Categoria
+
+' Exemplo de interação View <-> Controller
+TelaLogin --> UsuarioController
+TelaDashboard --> ContaController
+FormularioTransacao --> TransacaoController
+FormularioConta --> ContaController
+ListaCategorias --> CategoriaController
+@enduml

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div th:fragment="header" class="bg-white shadow-sm dark:bg-gray-800 dark:border-b dark:border-gray-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-8">
+                <h1 class="text-xl font-semibold text-gray-800 dark:text-white">Spendwise</h1>
+                <div th:if="${customer != null}">
+                    <nav class="md:flex items-center space-x-6">
+                        <a href="/customer/painel"
+                            class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Home</a>
+                        <a href="/metrics"
+                            class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Metrics</a>
+                        <div th:if="${customer.role == T(com.ifpb.edu.spendwise.model.enumerator.UserRoles).ADMINISTRATOR}">
+                            <a  href="/manager"
+                                class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Manager</a>
+                        </div>
+                    </nav>
+                </div>
+
+            </div>
+
+            <div th:if="${customer == null}" class="space-x-4">
+                <nav class="flex items-center space-x-4">
+                    <a href="/customer/login"
+                        class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Login</a>
+                    <a href="/customer/form"
+                        class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Register</a>
+                </nav>
+            </div>
+
+            <div th:if="${customer != null}" class="flex items-center space-x-6">
+                <div class="text-right">
+                    <h3 th:text="${customer.name}" class="font-medium text-gray-800 dark:text-white"></h3>
+                    <div th:text="${customer.role}" class="text-sm text-gray-500 dark:text-gray-400"></div>
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    <div th:if="${customer.getRole()=='ADMINISTRATOR'}">
+                        <a th:href="/customer/painel"
+                            th:text="${#strings.contains(currentUri, 'ADMINISTRATOR') ? 'Painel' : 'ADM Painel'}"
+                            class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"></a>
+                    </div>
+                    <a href="/customer/logout"
+                        class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
