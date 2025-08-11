@@ -1,7 +1,7 @@
 package com.ifpb.edu.spendwise.service;
 
 import java.util.List;
-import java.util.Map;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,8 +48,8 @@ public class CategoryService implements CategoryServiceInterface{
         return categoryRepository.save(updateCategory);
     }
 
-    @Override
-    public Map<String, Integer> countTransactionsByCategory() {
-        return categoryRepository.countTransactionsByCategory();
-    }
+    // @Override
+    // public Map<String, Integer> countTransactionsByCategory() {
+    //     return categoryRepository.countTransactionsByCategory();
+    // }
 }

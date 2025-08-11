@@ -9,7 +9,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import com.ifpb.edu.spendwise.exception.customer.CustomerNotFoundExcepption;
+import com.ifpb.edu.spendwise.exception.customer.CustomerNotFoundException;
 import com.ifpb.edu.spendwise.model.Customer;
 import com.ifpb.edu.spendwise.model.enumerator.UserRoles;
 import com.ifpb.edu.spendwise.repository.CustomerRepository;
@@ -39,7 +39,7 @@ public class AdministratorService implements AdministratorServiceInterface {
         if(customerToDelete.get()!=null){
             this.customerRepository.deleteById(customerId);
         }else{
-            throw new CustomerNotFoundExcepption("Customer ID not found for delete",null);
+            throw new CustomerNotFoundException("Customer ID not found for delete");
         }
     }
 

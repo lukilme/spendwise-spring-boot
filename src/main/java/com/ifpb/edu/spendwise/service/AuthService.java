@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ifpb.edu.spendwise.exception.customer.CustomerBadRequestExecption;
@@ -17,7 +18,8 @@ public class AuthService {
     private CustomerRepository customerRepository;
 
     public static String hashPassword(String plainTextPassword) {
-        return BCrypt.hashpw(plainTextPassword, BCrypt.gensalt());
+        BCryptPasswordEncoder sup = new BCryptPasswordEncoder();
+        return sup.encode(plainTextPassword);
     }
 
     public static boolean checkPass(String plainPassword, String hashedPassword) {

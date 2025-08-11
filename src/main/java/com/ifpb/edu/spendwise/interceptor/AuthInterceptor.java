@@ -31,7 +31,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
                 boolean requerAdmin = relativePath.startsWith("/customer") || relativePath.startsWith("/account");
 
-                if (requerAdmin && customer.getRole() != UserRoles.ADMINISTRATOR) {
+                if (requerAdmin && customer.getRole() != UserRoles.ROLE_ADMINISTRATOR) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "Acesso negado.");
                     return false;
                 }

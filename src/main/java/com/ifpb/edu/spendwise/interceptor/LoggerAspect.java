@@ -9,7 +9,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
 
-import com.ifpb.edu.spendwise.util.LoggerHandle;
+import com.ifpb.edu.spendwise.util.Log;
 
 @Aspect
 @Component
@@ -28,30 +28,30 @@ public class LoggerAspect {
         try {
             for (Object object : joinPoint.getArgs()) {
                 if(object!=null){
-                    LoggerHandle.info(object.toString());
+                    Log.info(object.toString());
                     if (object.toString().matches("org.apache.catalina.session.StandardSessionFacade@.*")) {
                     StandardSessionFacade sup = (StandardSessionFacade) object;
                     Iterator<String> iterator = sup.getAttributeNames().asIterator();
                     int index = 0;
-                    LoggerHandle.info("Interando a váriavel -> " + sup.getClass().toString());
+                    Log.info("Interando a váriavel -> " + sup.getClass().toString());
                     while (iterator.hasNext()) {
 
                         String thing = iterator.next();
-                        LoggerHandle.infoIterator(index, thing);
+                        Log.infoIterator(index, thing);
                         index++;
                     }
                 } else {
-                    LoggerHandle.info(object.toString());
+                    Log.info(object.toString());
                 }
                 }else{
-                    LoggerHandle.info("Object Null");
+                    Log.info("Object Null");
                 }
 
                 
             }
-            LoggerHandle.warning("Método com @GetMapping executado: " + methodName);
+            Log.warning("Método com @GetMapping executado: " + methodName);
         } catch (Exception e) {
-            LoggerHandle.erro(e);
+            Log.erro(e);
         }
 
         // Iterator<String> iterator = session.getAttributeNames().asIterator();
@@ -68,9 +68,9 @@ public class LoggerAspect {
         System.out.println("LOG Before: Método com @PostMapping executado: ");
         String methodName = joinPoint.getSignature().getName();
         for (Object object : joinPoint.getArgs()) {
-            LoggerHandle.info(object.toString());
+            Log.info(object.toString());
         }
-        LoggerHandle.warning("LOG: Método com @PostMapping executado: " + methodName);
+        Log.warning("LOG: Método com @PostMapping executado: " + methodName);
     }
 
     @After("execution(@org.springframework.web.bind.annotation.PostMapping * *(..))")
@@ -78,9 +78,9 @@ public class LoggerAspect {
          System.out.println("LOG After: Método com @PostMapping executado: ");
         String methodName = joinPoint.getSignature().getName();
         for (Object object : joinPoint.getArgs()) {
-            LoggerHandle.info(object.toString());
+            Log.info(object.toString());
         }
-        LoggerHandle.warning("LOG: Método com @PostMapping executado: " + methodName);
+        Log.warning("LOG: Método com @PostMapping executado: " + methodName);
     }
 
 }

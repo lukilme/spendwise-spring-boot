@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.ifpb.edu.spendwise.exception.customer.CustomerBadRequestExecption;
-import com.ifpb.edu.spendwise.exception.customer.CustomerNotFoundExcepption;
+import com.ifpb.edu.spendwise.exception.customer.CustomerNotFoundException;
 import com.ifpb.edu.spendwise.exception.customer.CustomerSaveException;
 import com.ifpb.edu.spendwise.exception.customer.DuplicateCustomerException;
 
@@ -17,8 +17,8 @@ public class CustomerException {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to save customer. Please try again later:\n"+ex.getMessage());
     }
 
-    @ExceptionHandler(CustomerNotFoundExcepption.class)
-    public ResponseEntity<String> handleCustomerNotFound(CustomerNotFoundExcepption ex){
+    @ExceptionHandler(CustomerNotFoundException.class)
+    public ResponseEntity<String> handleCustomerNotFound(CustomerNotFoundException ex){
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Failed to find customer. Customer may not exists:\n"+ex.getMessage());
     }
 

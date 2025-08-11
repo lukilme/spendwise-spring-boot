@@ -36,14 +36,14 @@ public class AdministratorController {
             HttpSession session, ModelAndView model) {
 
         Customer customer = (Customer) session.getAttribute("customer");
-        if (customer == null || customer.getRole() != UserRoles.ADMINISTRATOR) {
+        if (customer == null || customer.getRole() != UserRoles.ROLE_ADMINISTRATOR) {
             model.setViewName("redirect:/customer/login");
             return model;
         }
         model.addObject("customer", customer);
         model.setViewName("administrator/user_manager");
-        List<Customer> admins = administratorService.getCustomers(UserRoles.ADMINISTRATOR, page, size, "id");
-        List<Customer> commons = administratorService.getCustomers(UserRoles.COMMON, page, size, "id");
+        List<Customer> admins = administratorService.getCustomers(UserRoles.ROLE_ADMINISTRATOR, page, size, "id");
+        List<Customer> commons = administratorService.getCustomers(UserRoles.ROLE_COMMON, page, size, "id");
 
         model.addObject("admins", admins);
         model.addObject("commons", commons);

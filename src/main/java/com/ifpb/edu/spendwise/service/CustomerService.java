@@ -16,7 +16,7 @@ import com.ifpb.edu.spendwise.repository.AccountRepository;
 import com.ifpb.edu.spendwise.repository.CustomerRepository;
 import com.ifpb.edu.spendwise.repository.TransactionRepository;
 import com.ifpb.edu.spendwise.service.interfaces.CustomerServiceInterface;
-import com.ifpb.edu.spendwise.util.LoggerHandle;
+import com.ifpb.edu.spendwise.util.Log;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -35,7 +35,7 @@ public class CustomerService implements CustomerServiceInterface {
 
     public Customer createCustomer(CreateCustomerRequest newCustomer) {
 
-        LoggerHandle.info("Starting customer creation process for email: {}".formatted(newCustomer.getEmail()));
+        Log.info("Starting customer creation process for email: {}".formatted(newCustomer.getEmail()));
 
         try {
 
@@ -53,16 +53,16 @@ public class CustomerService implements CustomerServiceInterface {
 
         } catch (EmailAlreadyExistsException | InvalidCustomerDataException ex) {
 
-            LoggerHandle.warning("Fail to create customer with email: " + newCustomer.getEmail());
-            LoggerHandle.warning("Customer exception failed: " + ex.getMessage());
-            LoggerHandle.erro(ex);
+            Log.warning("Fail to create customer with email: " + newCustomer.getEmail());
+            Log.warning("Customer exception failed: " + ex.getMessage());
+            Log.erro(ex);
 
             throw ex;
         } catch (Exception ex) {
 
-            LoggerHandle.warning("Unexpected error during customer creation for email: " + newCustomer.getEmail());
-            LoggerHandle.info("Customer exception failed: " + ex.getMessage());
-            LoggerHandle.erro(ex);
+            Log.warning("Unexpected error during customer creation for email: " + newCustomer.getEmail());
+            Log.info("Customer exception failed: " + ex.getMessage());
+            Log.erro(ex);
 
             throw new CustomerCreationException("Failed to create customer", ex);
         }
@@ -144,17 +144,7 @@ public class CustomerService implements CustomerServiceInterface {
         return transactionRepository.countByCustomerId(customerId);
     }
 
-
-
-
-
-
     // ====================PRIVATE-METHODS====================
-
-
-
-
-
 
     private void validateEmailUniqueness(String email) {
         if (customerRepository.existsByEmailIgnoreCase(email)) {
@@ -178,12 +168,12 @@ public class CustomerService implements CustomerServiceInterface {
 
     private void encryptPassword(Customer customer) {
         try {
-            LoggerHandle.warning("Encrypting password for customer: " + customer.getEmail());
+            Log.warning("Encrypting password for customer: " + customer.getEmail());
             String hashedPassword = AuthService.hashPassword(customer.getPassword());
             customer.setPassword(hashedPassword);
         } catch (Exception e) {
             String errorMessage = String.format("Failed to encrypt password for customer: %s", customer.getEmail());
-            LoggerHandle.erro(e);
+            Log.erro(e);
             throw new CustomerCreationException(errorMessage, e);
         }
     }

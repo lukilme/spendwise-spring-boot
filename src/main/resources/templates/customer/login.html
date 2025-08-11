@@ -10,26 +10,26 @@
         class="max-w-md mb-6 mx-auto mt-12 p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800 dark:border dark:border-gray-700">
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Login</h1>
 
-        <form th:action="@{/customer/login}" th:object="${customerLoginCredential}" method="post" class="space-y-4">
+        <form th:action="@{/auth/login}" method="post" class="space-y-4">
             <div>
                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                <input type="text" th:field="*{email}" id="email"
+                <input type="text" name="username" required id="email"
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500" />
-                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                <!-- <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
                     class="text-sm text-red-600 dark:text-red-400"></span>
                 <span th:unless="${#fields.hasErrors('email')}" class="text-sm text-gray-500 dark:text-gray-400">Digite
-                    o email cadastrado</span>
+                    o email cadastrado</span> -->
             </div>
 
             <div>
                 <label for="password"
                     class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                <input type="password" th:field="*{password}" id="password"
+                <input type="password" name="password" required id="password"
                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500" />
-                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                <!-- <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
                     class="text-sm text-red-600 dark:text-red-400"></span>
                 <span th:unless="${#fields.hasErrors('password')}"
-                    class="text-sm text-gray-500 dark:text-gray-400">Digite sua senha cadastrada</span>
+                    class="text-sm text-gray-500 dark:text-gray-400">Digite sua senha cadastrada</span> -->
                 <div class="mt-1 text-right">
                     <a th:href="@{/customer/forgot-password}"
                         class="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Esqueceu
@@ -44,7 +44,12 @@
                 </button>
             </div>
         </form>
-
+         <div th:if="${param.error}">
+        Usuário ou senha inválidos.
+    </div>
+    <div th:if="${param.logout}">
+        Logout realizado com sucesso.
+    </div>
         <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Não tem uma conta?
             <a th:href="@{/customer/form}"

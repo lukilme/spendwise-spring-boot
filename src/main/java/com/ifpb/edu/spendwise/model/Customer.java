@@ -57,7 +57,7 @@ public class Customer implements Serializable {
     @Column(name = "role_customer")
     @Schema(description = "User role", example = "COMMON")
     @Builder.Default
-    private UserRoles role = UserRoles.COMMON;
+    private UserRoles role = UserRoles.ROLE_COMMON;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status_customer")

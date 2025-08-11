@@ -25,7 +25,7 @@ public class HomeController {
         if (customer == null) {
             return new ModelAndView("redirect:/customer/login");
         }
-        if (customer.getRole() == UserRoles.ADMINISTRATOR) {
+        if (customer.getRole() == UserRoles.ROLE_ADMINISTRATOR) {
             return new ModelAndView("redirect:/administrator/painel");
         } else {
             return new ModelAndView("redirect:/customer/painel");

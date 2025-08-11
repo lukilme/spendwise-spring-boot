@@ -23,7 +23,7 @@ import com.ifpb.edu.spendwise.model.enumerator.AccountTypes;
 import com.ifpb.edu.spendwise.repository.interfaces.TransactionCommentCount;
 import com.ifpb.edu.spendwise.service.AccountService;
 import com.ifpb.edu.spendwise.service.TransactionService;
-import com.ifpb.edu.spendwise.util.LoggerHandle;
+import com.ifpb.edu.spendwise.util.Log;
 import com.ifpb.edu.spendwise.util.SessionUtil;
 
 import org.springframework.ui.Model;
@@ -82,28 +82,28 @@ public class AccountController {
 
             if (result.hasErrors()) {
                 model.addAttribute("error", "Corrija os erros no formulário.");
-                LoggerHandle.warning("Erros de validação ao criar conta para usuário ID:"+loggedCustomer.getId());
+                Log.warning("Erros de validação ao criar conta para usuário ID:"+loggedCustomer.getId());
                 return "account/form";
             }
 
             accountService.createAccount(account);
             redirectAttributes.addFlashAttribute("success", "Conta criada com sucesso!");
-            LoggerHandle.info("Conta criada com sucesso para usuário ID: "+ loggedCustomer.getId());
+            Log.info("Conta criada com sucesso para usuário ID: "+ loggedCustomer.getId());
 
-            return "redirect:/customer/painel";
+            return "customer/painel";
 
         } catch (DataIntegrityViolationException e) {
-            LoggerHandle.erro(e);
+            Log.erro(e);
             model.addAttribute("error", "existe uma conta com esses dados. Verifique as informações.");
             return "account/form";
 
         } catch (IllegalArgumentException e) {
-            LoggerHandle.erro(e);
+            Log.erro(e);
             model.addAttribute("error", "dados inválidos fornecidos. Verifique as informações.");
             return "account/form";
 
         } catch (Exception e) {
-            LoggerHandle.erro(e);
+            Log.erro(e);
             redirectAttributes.addFlashAttribute("error", "Ocorreu um erro inesperado. Tente novamente.");
             return "redirect:/account/form";
         }

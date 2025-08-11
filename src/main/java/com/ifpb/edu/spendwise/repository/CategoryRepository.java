@@ -1,8 +1,7 @@
 package com.ifpb.edu.spendwise.repository;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -44,15 +43,15 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("DELETE FROM Category c WHERE c.name = :categoryName")
     void deleteByName(String categoryName);
 
-    @Query("SELECT c.name, COUNT(t) FROM Category c LEFT JOIN c.transactions t GROUP BY c.name")
-    List<Object[]> countTransactionsPerCategory();
+    // @Query("SELECT c.name, COUNT(t) FROM Category c LEFT JOIN c.transactions t GROUP BY c.name")
+    // List<Object[]> countByTransactionsCategoryId();
 
-    default Map<String, Integer> countTransactionsByCategory() {
-        return countTransactionsPerCategory().stream()
-                .collect(Collectors.toMap(
-                        obj -> (String) obj[0],
-                        obj -> ((Long) obj[1]).intValue()));
-    }
+    // default Map<String, Integer> countTransactionsByCategory() {
+    //     return countByTransactionsCategoryId().stream()
+    //             .collect(Collectors.toMap(
+    //                     obj -> (String) obj[0],
+    //                     obj -> ((Long) obj[1]).intValue()));
+    // }
 
     Category findByName(String name);
     // List<Category> findByAdminTrue();

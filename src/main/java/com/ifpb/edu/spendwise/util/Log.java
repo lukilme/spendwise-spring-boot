@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 @SuppressWarnings("unused")
-public class LoggerHandle {
+public class Log {
 
     private static final String RESET = "\u001B[0m";
     private static final String BOLD = "\u001B[1m";

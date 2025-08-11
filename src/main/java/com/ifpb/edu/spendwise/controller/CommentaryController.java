@@ -16,7 +16,7 @@ import com.ifpb.edu.spendwise.model.Commentary;
 import com.ifpb.edu.spendwise.model.Customer;
 import com.ifpb.edu.spendwise.service.AccountService;
 import com.ifpb.edu.spendwise.service.CommentaryService;
-import com.ifpb.edu.spendwise.util.LoggerHandle;
+import com.ifpb.edu.spendwise.util.Log;
 import com.ifpb.edu.spendwise.util.SessionUtil;
 
 import jakarta.servlet.http.HttpSession;
@@ -46,7 +46,7 @@ public class CommentaryController {
 
         for (Commentary comnt : commentaries) {
 
-            LoggerHandle.infoIterator(count, comnt.toString());
+            Log.infoIterator(count, comnt.toString());
             count++;
         }
 

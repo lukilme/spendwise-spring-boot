@@ -1,6 +1,7 @@
 package com.ifpb.edu.spendwise.controller;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,8 @@ import com.ifpb.edu.spendwise.model.Customer;
 import com.ifpb.edu.spendwise.model.dto.CreateCustomerRequest;
 import com.ifpb.edu.spendwise.model.enumerator.AccountTypes;
 import com.ifpb.edu.spendwise.service.AccountService;
-import com.ifpb.edu.spendwise.service.AuthService;
 import com.ifpb.edu.spendwise.service.CustomerService;
-import com.ifpb.edu.spendwise.util.LoggerHandle;
+import com.ifpb.edu.spendwise.util.Log;
 import com.ifpb.edu.spendwise.util.SessionUtil;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -50,16 +50,10 @@ public class CustomerController {
     @Autowired
     private SessionUtil sessionUtil;
 
-    @Autowired
-    private AuthService authService;
-
     @GetMapping("/form")
-    public ModelAndView registerCustomer(HttpSession session) {
-        Customer loggedCustomer = sessionUtil.getLoggedCustomer(session);
-
-        if (loggedCustomer != null) {
-            log.info("Cliente já logado tentando acessar formulário de registro. ID: {}", loggedCustomer.getId());
-            return new ModelAndView("dashboard");
+    public ModelAndView registerCustomer(HttpSession session, Principal principal) {
+        if(principal != null){
+            Log.warning(principal.toString());
         }
 
         ModelAndView model = new ModelAndView("customer/form");
@@ -99,7 +93,7 @@ public class CustomerController {
 
     private boolean isCustomerAuthenticated(Customer customer, Model model) {
         if (customer == null) {
-            LoggerHandle.warning("Tentativa de acesso ao painel sem autenticação");
+            Log.warning("Tentativa de acesso ao painel sem autenticação");
             model.addAttribute("customerLoginCredential", new Customer());
             return false;
         }
@@ -186,15 +180,14 @@ public class CustomerController {
     }
 
     @GetMapping("/login")
-    public ModelAndView login(HttpSession session) {
-        Customer loggedCustomer = (Customer) session.getAttribute("customer");
-        if (loggedCustomer != null) {
-            return new ModelAndView("redirect:/customer/painel");
-        }
+    public String login(@RequestParam(value = "error", required = false) String error,
+            @RequestParam(value = "logout", required = false) String logout, HttpSession session, Model model) {
 
-        ModelAndView model = new ModelAndView("customer/login");
-        model.addObject("customerLoginCredential", new Customer());
-        return model;
+        if (error != null)
+            model.addAttribute("error", "Usuário ou senha inválidos.");
+        if (logout != null)
+            model.addAttribute("msg", "Logout realizado com sucesso.");
+        return "customer/login";
     }
 
     private Page<Account> getFilteredAccounts(Long customerId, List<AccountTypes> types, PageRequest pageable) {
@@ -206,7 +199,7 @@ public class CustomerController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public String saveNewCustomer(
             @Valid @ModelAttribute("candidateCustomer") CreateCustomerRequest newCustomer,
             BindingResult result,
@@ -231,7 +224,7 @@ public class CustomerController {
             attr.addFlashAttribute("successMessage", "Cliente criado com sucesso!");
             log.info("Cliente criado com sucesso. ID: {}, Email: {}", savedCustomer.getId(), savedCustomer.getEmail());
 
-            return "redirect:/customer/painel";
+            return "redirect:/customer/login";
 
         } catch (DataIntegrityViolationException e) {
             log.warn("Tentativa de criar cliente duplicado: {}", newCustomer.getEmail());
@@ -255,29 +248,6 @@ public class CustomerController {
         Sort.Direction direction = "asc".equalsIgnoreCase(order) ? Sort.Direction.ASC : Sort.Direction.DESC;
 
         return Sort.by(direction, "expirationDate");
-    }
-
-    @PostMapping("/login")
-    public String validate(
-            @ModelAttribute Customer customer,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-        try {
-            Customer authenticatedCustomer = authService.validateLogin(customer);
-            System.out.println(authenticatedCustomer);
-
-            session.setAttribute("customer", authenticatedCustomer);
-
-            session.setMaxInactiveInterval(5 * 60);
-
-            redirectAttributes.addFlashAttribute("message", "Login successful");
-            return "redirect:/customer/painel";
-
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("message", e.getMessage());
-            return "redirect:/customer/login";
-        }
-
     }
 
     @GetMapping("/logout")
