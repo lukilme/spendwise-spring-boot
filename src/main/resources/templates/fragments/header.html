@@ -12,7 +12,7 @@
                             class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Home</a>
                         <a href="/metrics"
                             class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Metrics</a>
-                        <div th:if="${customer.role == T(com.ifpb.edu.spendwise.model.enumerator.UserRoles).ADMINISTRATOR}">
+                        <div th:if="${customer.role == T(com.ifpb.edu.spendwise.model.enumerator.UserRoles).ROLE_ADMINISTRATOR}">
                             <a  href="/manager"
                                 class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors">Manager</a>
                         </div>
@@ -37,9 +37,9 @@
                 </div>
 
                 <div class="flex items-center space-x-4">
-                    <div th:if="${customer.getRole()=='ADMINISTRATOR'}">
+                    <div th:if="${customer.getRole()=='ROLE_ADMINISTRATOR'}">
                         <a th:href="/customer/painel"
-                            th:text="${#strings.contains(currentUri, 'ADMINISTRATOR') ? 'Painel' : 'ADM Painel'}"
+                            th:text="${#strings.contains(currentUri, 'ROLE_ADMINISTRATOR') ? 'Painel' : 'ADM Painel'}"
                             class="text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white transition-colors"></a>
                     </div>
                     <a href="/customer/logout"
