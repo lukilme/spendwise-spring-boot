@@ -109,8 +109,6 @@ public String createAccount(
     } catch (IllegalArgumentException e) {
         model.addAttribute("error", "Dados inválidos fornecidos. Verifique as informações.");
         model.addAttribute("account", account);
-
-
         return "redirect:customer/painel";
     } catch (Exception e) {
         redirectAttributes.addFlashAttribute("error", "Ocorreu um erro inesperado. Tente novamente.");

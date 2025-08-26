@@ -40,6 +40,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/customer/form", "/customer/register").permitAll()
                         .requestMatchers("/administrator/**").hasRole("ADMINISTRATOR")
+                        .requestMatchers("/manager/**").hasAnyRole("ADMINISTRATOR")
                         .requestMatchers("/customer/**").hasAnyRole("ADMINISTRATOR", "COMMON")
                         .requestMatchers("/transactions/**").hasAnyRole("ADMINISTRATOR", "COMMON")
                         .requestMatchers("/commentary/**").hasAnyRole("ADMINISTRATOR", "COMMON")

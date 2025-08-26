@@ -19,39 +19,21 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     
-    /**
-     * Busca categoria pelo nome (case insensitive)
-     */
+   
     Optional<Category> findByNameIgnoreCase(String name);
     
-    /**
-     * Verifica se existe categoria com o nome (excluindo o ID atual para updates)
-     */
+
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
-    
-    /**
-     * Verifica se existe categoria com o nome
-     */
+
     boolean existsByNameIgnoreCase(String name);
-    
-    /**
-     * Busca categorias por tipo
-     */
+   
     List<Category> findByCategoryType(CategoryTypes categoryType);
-    
-    /**
-     * Busca categorias ativas
-     */
+
     List<Category> findByActiveTrue();
-    
-    /**
-     * Busca categorias por status ativo
-     */
+
     List<Category> findByActive(Boolean active);
     
-    /**
-     * Busca categorias por tipo e status ativo
-     */
+
     Page<Category> findByCategoryTypeAndActive(CategoryTypes categoryType, Boolean active, Pageable pageable);
     
     /**

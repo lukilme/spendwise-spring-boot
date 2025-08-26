@@ -30,16 +30,13 @@ public class AdministratorController {
     private CustomerService customerService;
 
     @GetMapping()
-    public ModelAndView maanger(
+    public ModelAndView manger(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             HttpSession session, ModelAndView model) {
 
         Customer customer = (Customer) session.getAttribute("customer");
-        if (customer == null || customer.getRole() != UserRoles.ROLE_ADMINISTRATOR) {
-            model.setViewName("redirect:/customer/login");
-            return model;
-        }
+        
         model.addObject("customer", customer);
         model.setViewName("administrator/user_manager");
         List<Customer> admins = administratorService.getCustomers(UserRoles.ROLE_ADMINISTRATOR, page, size, "id");

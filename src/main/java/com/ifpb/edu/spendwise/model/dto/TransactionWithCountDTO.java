@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import com.ifpb.edu.spendwise.model.Transaction;
 
+import lombok.Data;
+@Data
 public class TransactionWithCountDTO {
     private Long id;
     private BigDecimal value;
