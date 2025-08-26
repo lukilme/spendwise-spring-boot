@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ifpb.edu.spendwise.model.StatementItem;
 import com.ifpb.edu.spendwise.model.Transaction;
 import com.ifpb.edu.spendwise.model.dto.StatementFilterDto;
+import com.ifpb.edu.spendwise.model.dto.TransactionDTO;
 import com.ifpb.edu.spendwise.repository.TransactionRepository;
 import com.ifpb.edu.spendwise.repository.interfaces.TransactionCommentCount;
 
@@ -26,6 +27,12 @@ public class TransactionService {
 
     @Autowired
     private ExtractFilterService extractFilterService;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Autowired
+    AccountService accountService;
 
     @Transactional
     public Transaction createTransaction(Transaction transaction) {
@@ -87,7 +94,25 @@ public class TransactionService {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'TransactionCommentCount'");
     }
-    
+    public TransactionDTO toDTO(Transaction t) {
+        TransactionDTO dto = new TransactionDTO();
+        dto.setId(t.getId());
+        dto.setValue(t.getValue());
+        dto.setTransactionDate(t.getTransactionDate());
+        dto.setAccountId(t.getAccount().getId());
+        dto.setCategoryId(t.getCategory() != null ? t.getCategory().getId() : null);
+        return dto;
+    }
+
+    public Transaction toEntity(TransactionDTO dto) {
+        Transaction t = new Transaction();
+        t.setId(dto.getId());
+        t.setValue(dto.getValue());
+        t.setTransactionDate(dto.getTransactionDate());
+        t.setAccount(accountService.findById(dto.getAccountId()).orElseThrow());
+        t.setCategory(categoryService.findById(dto.getCategoryId()).orElseThrow());
+        return t;
+    }
 
     // public List<Transaction> findTransactionsByCategory(Long categoryId, int
     // year, int month) {

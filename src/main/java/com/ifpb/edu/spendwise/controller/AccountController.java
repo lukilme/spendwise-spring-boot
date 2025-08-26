@@ -20,12 +20,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ifpb.edu.spendwise.model.Account;
 import com.ifpb.edu.spendwise.model.Customer;
+import com.ifpb.edu.spendwise.model.Transaction;
+import com.ifpb.edu.spendwise.model.dto.TransactionDTO;
+import com.ifpb.edu.spendwise.model.dto.TransactionListDTO;
 import com.ifpb.edu.spendwise.model.enumerator.AccountTypes;
 import com.ifpb.edu.spendwise.repository.interfaces.TransactionCommentCount;
 import com.ifpb.edu.spendwise.service.AccountService;
 import com.ifpb.edu.spendwise.service.CustomerService;
 import com.ifpb.edu.spendwise.service.TransactionService;
-import com.ifpb.edu.spendwise.util.Log;
 import com.ifpb.edu.spendwise.util.SessionUtil;
 
 import org.springframework.ui.Model;
@@ -117,7 +119,7 @@ public String createAccount(
 }
 
 
-    @GetMapping
+@GetMapping
 public String viewAccount(
         @RequestParam("id") Long accountId,
         @RequestParam(defaultValue = "0") int page,
@@ -127,27 +129,29 @@ public String viewAccount(
         HttpSession session,
         Model model) {
 
-    Optional<Account> accountOpt = accountService.findById(accountId);
-    if (accountOpt.isEmpty()) {
-        return "redirect:/customer/painel";
-    }
-
-    Account account = accountOpt.get();
-    model.addAttribute("account", account); // <-- adicionado
+    Account account = accountService.findById(accountId)
+            .orElseThrow(() -> new IllegalArgumentException("Conta não encontrada"));
 
     Sort sort = sortDir.equalsIgnoreCase("desc")
             ? Sort.by(sortBy).descending()
             : Sort.by(sortBy).ascending();
     Pageable pageable = PageRequest.of(page, size, sort);
+
+    // Buscar TransactionCommentCount (ou projection)
     Page<TransactionCommentCount> transactionPage = transactionService.findAllWithCommentCount(accountId, pageable);
 
-    model.addAttribute("transactionPage", transactionPage);
+    // Mapear para DTO
+    Page<TransactionListDTO> dtoPage = transactionPage.map(tc -> new TransactionListDTO(tc.getTransaction(), tc.getCommentCount()));
+
+    model.addAttribute("account", account);
+    model.addAttribute("transactionPage", dtoPage); // Page<TransactionListDTO>
     model.addAttribute("sortBy", sortBy);
     model.addAttribute("sortDir", sortDir);
     model.addAttribute("accountId", accountId);
 
     return "account/details";
 }
+
 
 
 }

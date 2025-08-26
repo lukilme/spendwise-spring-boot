@@ -12,14 +12,15 @@
 
                 <div class="mb-6">
                     <h1 class="text-3xl font-bold text-gray-900 dark:text-white"
-                        th:text="${transaction.id != null ? 'Edit Transaction' : 'Create New Transaction'}">
+                        th:text="${transactionDTO.id != null ? 'Edit Transaction' : 'Create New Transaction'}">
                         Create New Transaction
                     </h1>
+                    
                     <nav class="text-sm text-gray-600 dark:text-gray-400 mt-2">
                         <a th:href="@{/transactions}"
                             class="hover:text-gray-800 dark:hover:text-gray-200">Transactions</a>
                         <span class="mx-2">/</span>
-                        <span th:text="${transaction.id != null ? 'Edit' : 'New'}">New</span>
+                        <span th:text="${transactionDTO.id != null ? 'Edit' : 'New'}">New</span>
                     </nav>
                 </div>
 
@@ -28,70 +29,35 @@
                         <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Transaction Details</h2>
                     </div>
 
-                    <form th:action="@{/transactions}" th:object="${transaction}" method="post" class="p-6">
+                    <form th:action="@{/transactions}" th:object="${transactionDTO}" method="post" class="p-6">
                         <input type="hidden" th:field="*{id}">
-                        <input type="hidden" th:field="*{account.id}" th:value="${account.id}" />
-                        <div class="mb-4">
-                            <label class="block text-sm font-medium">Conta</label>
-                            <input type="text" th:value="${account.name}" readonly
-                                class="w-full px-3 py-2 bg-gray-100 border rounded" />
-                        </div>
+                        <input type="hidden" th:field="*{accountId}" />
+
                         <div class="mb-6">
-                            <label for="value" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Value *
-                            </label>
-                            <input type="number" step="0.01" min="0.01" th:field="*{value}"
-                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                th:classappend="${#fields.hasErrors('value')} ? 'border-red-500' : 'border-gray-300'">
-                            <p th:if="${#fields.hasErrors('value')}" th:errors="*{value}"
-                                class="mt-1 text-sm text-red-600"></p>
+                            <label for="value">Value *</label>
+                            <input type="number" step="0.01" min="0.01" th:field="*{value}" required>
+                            <p th:if="${#fields.hasErrors('value')}" th:errors="*{value}"></p>
                         </div>
 
                         <div class="mb-6">
-                            <label for="transactionDate"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Transaction Date *
-                            </label>
-                            <input type="datetime-local" th:field="*{transactionDate}"
-                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                th:classappend="${#fields.hasErrors('transactionDate')} ? 'border-red-500' : 'border-gray-300'">
-                            <p th:if="${#fields.hasErrors('transactionDate')}" th:errors="*{transactionDate}"
-                                class="mt-1 text-sm text-red-600"></p>
+                            <label for="transactionDate">Transaction Date *</label>
+                            <input type="datetime-local" th:field="*{transactionDate}" required>
+                            <p th:if="${#fields.hasErrors('transactionDate')}" th:errors="*{transactionDate}"></p>
                         </div>
 
                         <div class="mb-6">
-                            <label for="category"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                Category *
-                            </label>
-                            <select th:field="*{category}"
-                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
-                                th:classappend="${#fields.hasErrors('category')} ? 'border-red-500' : 'border-gray-300'">
+                            <label>Category *</label>
+                            <select th:field="*{categoryId}" required>
                                 <option value="">Select a category</option>
-                                <option th:each="category : ${categories}" th:value="${category.id}"
-                                    th:text="${category.name}"
-                                    th:selected="${transaction.category != null && transaction.category.id == category.id}">
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
                                 </option>
                             </select>
-                            <p th:if="${#fields.hasErrors('category')}" th:errors="*{category}"
-                                class="mt-1 text-sm text-red-600"></p>
+                            <p th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></p>
                         </div>
 
-
-                        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200 dark:border-gray-700">
-                            <a th:href="@{/transactions}"
-                                class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500 rounded-md">
-                                Cancel
-                            </a>
-                            <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md">
-                                <span
-                                    th:text="${transaction.id != null ? 'Edit Transaction' : 'Create New Transaction'}">
-                                    Create Transaction
-                                </span>
-                            </button>
-                        </div>
+                        <button type="submit">Create Transaction</button>
                     </form>
+
                 </div>
             </div>
         </div>

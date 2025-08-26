@@ -21,26 +21,19 @@ import jakarta.persistence.EntityNotFoundException;
 public class CategoryService{
     @Autowired
     private CategoryRepository categoryRepository;
-    
-    /**
-     * Busca todas as categorias com paginação
-     */
+
     @Transactional(readOnly = true)
     public Page<Category> findAll(Pageable pageable) {
         return categoryRepository.findAll(pageable);
     }
     
-    /**
-     * Busca todas as categorias sem paginação
-     */
+
     @Transactional(readOnly = true)
     public List<Category> findAll() {
         return categoryRepository.findAllByOrderByNameAsc();
     }
     
-    /**
-     * Busca categoria por ID
-     */
+
     @Transactional(readOnly = true)
     public Optional<Category> findById(Long id) {
         if (id == null) {
@@ -48,10 +41,7 @@ public class CategoryService{
         }
         return categoryRepository.findById(id);
     }
-    
-    /**
-     * Busca categoria por nome (case insensitive)
-     */
+
     @Transactional(readOnly = true)
     public Optional<Category> findByName(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -59,26 +49,18 @@ public class CategoryService{
         }
         return categoryRepository.findByNameIgnoreCase(name.trim());
     }
-    
-    /**
-     * Busca categorias ativas
-     */
+
     @Transactional(readOnly = true)
     public List<Category> findActiveCategories() {
         return categoryRepository.findByActiveTrueOrderByNameAsc();
     }
-    
-    /**
-     * Busca categorias por tipo
-     */
+
     @Transactional(readOnly = true)
     public List<Category> findByCategoryType(CategoryTypes categoryType) {
         return categoryRepository.findByCategoryType(categoryType);
     }
     
-    /**
-     * Busca categorias com filtros aplicados
-     */
+ 
     @Transactional(readOnly = true)
     public Page<Category> findCategoriesWithFilters(Pageable pageable,
                                                    Optional<CategoryTypes> categoryType,
@@ -91,13 +73,10 @@ public class CategoryService{
         return categoryRepository.findCategoriesWithFilters(typeFilter, activeFilter, searchFilter, pageable);
     }
     
-    /**
-     * Salva ou atualiza uma categoria
-     */
+
     public Category save(Category category) {
         validateCategory(category);
         
-        // Trim do nome e descrição
         if (category.getName() != null) {
             category.setName(category.getName().trim());
         }
@@ -108,9 +87,7 @@ public class CategoryService{
         return categoryRepository.save(category);
     }
     
-    /**
-     * Cria uma nova categoria
-     */
+
     public Category create(Category category) {
         if (category.getId() != null) {
             throw new IllegalArgumentException("Nova categoria não deve ter ID definido");
@@ -118,7 +95,6 @@ public class CategoryService{
         
         validateUniqueNameForCreate(category.getName());
         
-        // Define valores padrão se necessário
         if (category.getActive() == null) {
             category.setActive(true);
         }
@@ -126,9 +102,7 @@ public class CategoryService{
         return save(category);
     }
     
-    /**
-     * Atualiza uma categoria existente
-     */
+
     public Category update(Long id, Category category) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo para atualização");
@@ -145,9 +119,7 @@ public class CategoryService{
         return save(category);
     }
     
-    /**
-     * Exclui uma categoria por ID
-     */
+ 
     public void deleteById(Long id) {
         if (id == null) {
             throw new IllegalArgumentException("ID não pode ser nulo");
@@ -158,15 +130,11 @@ public class CategoryService{
             throw new EntityNotFoundException("Categoria não encontrada com ID: " + id);
         }
         
-        // Verifica se a categoria pode ser excluída (sem referências)
         validateCategoryCanBeDeleted(id);
         
         categoryRepository.deleteById(id);
     }
     
-    /**
-     * Desativa uma categoria (soft delete)
-     */
     public Category deactivate(Long id) {
         Optional<Category> categoryOpt = findById(id);
         if (categoryOpt.isEmpty()) {
@@ -189,9 +157,7 @@ public class CategoryService{
         return save(category);
     }
     
-    /**
-     * Verifica se categoria existe por ID
-     */
+
     @Transactional(readOnly = true)
     public boolean existsById(Long id) {
         if (id == null) {
@@ -200,9 +166,7 @@ public class CategoryService{
         return categoryRepository.existsById(id);
     }
     
-    /**
-     * Verifica se categoria existe por nome
-     */
+
     @Transactional(readOnly = true)
     public boolean existsByName(String name) {
         if (name == null || name.trim().isEmpty()) {
@@ -211,32 +175,25 @@ public class CategoryService{
         return categoryRepository.existsByNameIgnoreCase(name.trim());
     }
     
-    /**
-     * Conta total de categorias
-     */
+
     @Transactional(readOnly = true)
     public long count() {
         return categoryRepository.count();
     }
     
-    /**
-     * Conta categorias ativas
-     */
+
     @Transactional(readOnly = true)
     public long countActiveCategories() {
         return categoryRepository.countByActiveTrue();
     }
     
-    /**
-     * Conta categorias por tipo
-     */
+
     @Transactional(readOnly = true)
     public long countByCategoryType(CategoryTypes categoryType) {
         return categoryRepository.countByCategoryType(categoryType);
     }
     
-    // Métodos de validação privados
-    
+
     private void validateCategory(Category category) {
         if (category == null) {
             throw new IllegalArgumentException("Categoria não pode ser nula");
@@ -250,7 +207,6 @@ public class CategoryService{
             throw new IllegalArgumentException("Tipo da categoria é obrigatório");
         }
         
-        // Validações de tamanho (complementar às anotações JPA)
         String name = category.getName().trim();
         if (name.length() > 50) {
             throw new IllegalArgumentException("Nome da categoria não pode exceder 50 caracteres");
@@ -274,9 +230,7 @@ public class CategoryService{
     }
     
     private void validateCategoryCanBeDeleted(Long categoryId) {
-        // Implementar verificações específicas baseadas nas suas regras de negócio
-        // Por exemplo, verificar se existem produtos, transações, etc. que referenciam esta categoria
-        
+
         Long references = categoryRepository.countReferencesToCategory(categoryId);
         if (references > 0) {
             throw new CategoryException("Não é possível excluir a categoria pois existem registros que a referenciam");
