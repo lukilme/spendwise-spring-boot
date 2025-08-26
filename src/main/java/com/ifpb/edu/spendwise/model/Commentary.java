@@ -1,5 +1,6 @@
 package com.ifpb.edu.spendwise.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import jakarta.persistence.Entity;
@@ -16,7 +17,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,8 +24,10 @@ import lombok.ToString;
 @Builder
 @Table(name = "tb_commentary") 
 @ToString(exclude = { "transaction" }) 
-public class Commentary {
-    
+public class Commentary implements Serializable {
+
+    private static final long serialVersionUID = 1L; // recomendado
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,9 +41,6 @@ public class Commentary {
     @ManyToOne
     private Transaction transaction;
 
-    // @ManyToOne
-    // private Customer user;  
-
     @PrePersist
     protected void onCreate() {
         dateCreation = LocalDate.now();
@@ -52,6 +51,4 @@ public class Commentary {
     protected void onUpdate() {
         dateLastUpdate = LocalDate.now();
     }
-
-   
 }

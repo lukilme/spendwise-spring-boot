@@ -1,7 +1,5 @@
 package com.ifpb.edu.spendwise.config;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,38 +35,40 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
-            .cors(cors -> cors.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/customer/form", "/customer/register").permitAll()
-                .requestMatchers("/administrator/**").hasRole("ADMINISTRATOR")
-                .requestMatchers("/customer/**").hasAnyRole("ADMINISTRATOR", "COMMON")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/customer/login")
-                .loginProcessingUrl("/auth/login")
-                .defaultSuccessUrl("/customer/painel", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutUrl("/customer/logout")
-                .logoutSuccessUrl("/customer/login")
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
-            ).sessionManagement(session -> session
-    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> cors.disable())
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/customer/form", "/customer/register").permitAll()
+                        .requestMatchers("/administrator/**").hasRole("ADMINISTRATOR")
+                        .requestMatchers("/customer/**").hasAnyRole("ADMINISTRATOR", "COMMON")
+                        .requestMatchers("/transactions/**").hasAnyRole("ADMINISTRATOR", "COMMON")
+                        .requestMatchers("/commentary/**").hasAnyRole("ADMINISTRATOR", "COMMON")
+                        .requestMatchers("/account/**").hasAnyRole("ADMINISTRATOR", "COMMON")
+                        .requestMatchers("/categories/**").hasAnyRole("ADMINISTRATOR")
+                        .anyRequest().authenticated())
+                .formLogin(form -> form
+                        .loginPage("/customer/login")
+                        .loginProcessingUrl("/auth/login")
+                        .defaultSuccessUrl("/customer/painel", true)
+                        .failureUrl("/customer/login?error=true")
+                        .permitAll())
+                .logout(logout -> logout
+                        .logoutUrl("/customer/logout")
+                        .logoutSuccessUrl("/customer/login")
+                        .invalidateHttpSession(true)
+                        .clearAuthentication(true)
+                        .deleteCookies("JSESSIONID"))
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
 
-)
-.requestCache(requestCache -> requestCache.disable())
-;
+                )
+                .requestCache(requestCache -> requestCache.disable());
 
         return http.build();
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider(){
+    public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userDetailsService());
         provider.setPasswordEncoder(passwordEncoder());
@@ -90,22 +90,21 @@ public class SecurityConfig {
         };
     }
 
+    // @Bean
+    // public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http)
+    // throws Exception {
+    // http
+    // .securityMatcher("/public/**", "/api/public/**")
+    // .authorizeHttpRequests(auth -> auth
+    // .anyRequest().permitAll())
+    // .csrf(csrf -> csrf.disable())
+    // .cors(cors -> cors.disable())
+    // .formLogin(form -> form.disable())
+    // .httpBasic(basic -> basic.disable())
+    // .logout(logout -> logout.disable())
+    // .sessionManagement(session -> session
+    // .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        // @Bean
-        // public SecurityFilterChain publicEndpointsFilterChain(HttpSecurity http)
-        // throws Exception {
-        // http
-        // .securityMatcher("/public/**", "/api/public/**")
-        // .authorizeHttpRequests(auth -> auth
-        // .anyRequest().permitAll())
-        // .csrf(csrf -> csrf.disable())
-        // .cors(cors -> cors.disable())
-        // .formLogin(form -> form.disable())
-        // .httpBasic(basic -> basic.disable())
-        // .logout(logout -> logout.disable())
-        // .sessionManagement(session -> session
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-
-        // return http.build();
-        // }
+    // return http.build();
+    // }
 }

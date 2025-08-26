@@ -9,47 +9,70 @@
     <section
         class="max-w-md mb-6 mx-auto mt-12 p-6 bg-white rounded-lg shadow-sm dark:bg-gray-800 dark:border dark:border-gray-700">
         <h1 class="text-2xl font-semibold text-gray-800 dark:text-white mb-6">Login</h1>
-
-        <form th:action="@{/auth/login}" method="post" class="space-y-4">
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label>
-                <input type="text" name="username" required id="email"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500" />
-                <!-- <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
-                    class="text-sm text-red-600 dark:text-red-400"></span>
-                <span th:unless="${#fields.hasErrors('email')}" class="text-sm text-gray-500 dark:text-gray-400">Digite
-                    o email cadastrado</span> -->
-            </div>
-
-            <div>
-                <label for="password"
-                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
-                <input type="password" name="password" required id="password"
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-indigo-500 dark:focus:border-indigo-500" />
-                <!-- <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-                    class="text-sm text-red-600 dark:text-red-400"></span>
-                <span th:unless="${#fields.hasErrors('password')}"
-                    class="text-sm text-gray-500 dark:text-gray-400">Digite sua senha cadastrada</span> -->
-                <div class="mt-1 text-right">
-                    <a th:href="@{/customer/forgot-password}"
-                        class="text-xs text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">Esqueceu
-                        a senha?</a>
+<form th:action="@{/auth/login}" method="post" class="px-8 py-6">
+                <div th:if="${logout}"
+                     class="p-4 mb-4 text-sm text-green-800 bg-green-50 rounded-lg flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <span th:text="${logout}"></span>
                 </div>
-            </div>
 
-            <div>
-                <button type="submit"
-                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-700 dark:hover:bg-indigo-600 dark:focus:ring-indigo-500">
-                    Login
+                <div th:if="${loginError}"
+                     class="p-4 mb-4 text-sm text-red-800 bg-red-50 rounded-lg flex items-center">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    <span th:text="${loginError}"></span>
+                </div>
+
+                <div class="mb-5">
+                    <label for="email" class="block mb-2 text-sm font-medium text-gray-700">
+                        <i class="fas fa-envelope mr-2 text-indigo-600"></i>Email
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                        <input type="text" name="username" id="email" required placeholder="Seu email" 
+                               class="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg input-focus 
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <label for="password" class="block mb-2 text-sm font-medium text-gray-700">
+                        <i class="fas fa-key mr-2 text-indigo-600"></i>Senha
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" name="password" id="password" required placeholder="Sua senha" 
+                               class="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg input-focus 
+                                      focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center">
+                        <input id="remember-me" name="remember-me" type="checkbox" 
+                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                        <label for="remember-me" class="ml-2 block text-sm text-gray-700">
+                            Lembrar-me
+                        </label>
+                    </div>
+
+                    <div class="text-sm">
+                        <a href="#" class="font-medium text-indigo-600 hover:text-indigo-500">
+                            Esqueceu sua senha?
+                        </a>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                        class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium btn-hover 
+                               hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Entrar
                 </button>
-            </div>
-        </form>
-         <div th:if="${param.error}">
-        Usuário ou senha inválidos.
-    </div>
-    <div th:if="${param.logout}">
-        Logout realizado com sucesso.
-    </div>
+            </form>
+
         <div class="mt-4 text-sm text-gray-600 dark:text-gray-300">
             Não tem uma conta?
             <a th:href="@{/customer/form}"

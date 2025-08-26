@@ -31,6 +31,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -52,7 +53,7 @@ public class CustomerController {
 
     @GetMapping("/form")
     public ModelAndView registerCustomer(HttpSession session, Principal principal) {
-        if(principal != null){
+        if (principal != null) {
             Log.warning(principal.toString());
         }
 
@@ -62,15 +63,19 @@ public class CustomerController {
     }
 
     @GetMapping("/painel")
-    public String painel(HttpSession session, Model model,
-            @RequestParam(required = false) List<String> categoria,
-            @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "6") Integer size,
-            @RequestParam(required = false, defaultValue = "desc") String order) {
+public String painel(@AuthenticationPrincipal org.springframework.security.core.userdetails.User userDetails,
+                     Model model,
+                     @RequestParam(required = false) List<String> categoria,
+                     @RequestParam(defaultValue = "0") Integer page,
+                     @RequestParam(defaultValue = "6") Integer size,
+                     @RequestParam(required = false, defaultValue = "desc") String order) {
 
-        Customer customer = sessionUtil.getLoggedCustomer(session);
-        if (!isCustomerAuthenticated(customer, model)) {
-            return "customer/login";
+
+    String email = userDetails.getUsername();
+        Customer customer = customerService.findByEmail(email);
+      
+        if (customer==null) {
+            return "redirect:/customer/login";
         }
 
         try {
@@ -80,7 +85,7 @@ public class CustomerController {
 
             Page<Account> accountsPage = getFilteredAccounts(customer.getId(), filterTypes, pageable);
             Account newAccount = createDefaultAccount(customer);
-
+            model.addAttribute("account", newAccount);
             addPaginationAttributes(model, page, size, accountsPage);
             addAccountAttributes(model, accountsPage, filterTypes, sort, customer, newAccount);
 
@@ -91,14 +96,6 @@ public class CustomerController {
         }
     }
 
-    private boolean isCustomerAuthenticated(Customer customer, Model model) {
-        if (customer == null) {
-            Log.warning("Tentativa de acesso ao painel sem autenticação");
-            model.addAttribute("customerLoginCredential", new Customer());
-            return false;
-        }
-        return true;
-    }
 
     private Sort createSort(String order) {
         Sort sort = Sort.by("id");
@@ -110,16 +107,13 @@ public class CustomerController {
             return List.of();
         }
 
-        logSelectedCategories(categories);
         return categories.stream()
                 .map(String::toUpperCase)
                 .map(AccountTypes::valueOf)
                 .collect(Collectors.toList());
     }
 
-    private void logSelectedCategories(List<String> categories) {
-        categories.forEach(cat -> System.out.println("Categoria selecionada: " + cat));
-    }
+
 
     private Account createDefaultAccount(Customer customer) {
         Account newAccount = new Account();
@@ -181,12 +175,18 @@ public class CustomerController {
 
     @GetMapping("/login")
     public String login(@RequestParam(value = "error", required = false) String error,
-            @RequestParam(value = "logout", required = false) String logout, HttpSession session, Model model) {
+            @RequestParam(value = "logout", required = false) String logout, Model model) {
 
-        if (error != null)
-            model.addAttribute("error", "Usuário ou senha inválidos.");
-        if (logout != null)
-            model.addAttribute("msg", "Logout realizado com sucesso.");
+       
+        if (logout != null){
+            model.addAttribute("logout", "Logout realizado com sucesso.");
+        }
+        if (error != null) {
+            model.addAttribute("loginError", "Email ou senha inválidos");
+        }
+
+        model.addAttribute("username", "");
+        model.addAttribute("password", "");
         return "customer/login";
     }
 

@@ -40,7 +40,7 @@ public class CommentaryController {
         // LoggerHandle.info(account.toString());
         Customer loggedCustomer = sessionUtil.getLoggedCustomer(session);
         List<Commentary> commentaries = commentaryService.listCommentsByTransaction(transactionId);
-        session.setAttribute("commentaries", commentaries);
+        //session.setAttribute("commentaries", commentaries);
         model.addAttribute("commentaries", commentaries);
         int count = 0;
 

@@ -15,8 +15,8 @@
 
 // import jakarta.servlet.http.HttpSession;
 
-// @Controller
-// @RequestMapping("/auth")
+// // @Controller
+// // @RequestMapping("/auth")
 // public class AuthController {
 
 //     @Autowired
@@ -67,40 +67,40 @@
 //         return model;
 //     }
 
-//     // @PostMapping
-//     // public ModelAndView validate( CustomerLoginDTO customerLogin,
-//     // HttpSession session,
-//     // ModelAndView model,
-//     // RedirectAttributes redirectAtts
-//     // ){
+//     @PostMapping
+//     public ModelAndView validate( CustomerLoginDTO customerLogin,
+//     HttpSession session,
+//     ModelAndView model,
+//     RedirectAttributes redirectAtts
+//     ){
 
-//     // CustomerResponseDTO customerLogged =
-//     // this.authService.validateLogin(customerLogin);
-//     // if ((customerLogged = this.credentialValidateLogin(customerLogin)) != null) {
+//     CustomerResponseDTO customerLogged =
+//     this.authService.validateLogin(customerLogin);
+//     if ((customerLogged = this.credentialValidateLogin(customerLogin)) != null) {
 
-//     // session.setAttribute("customer", customerLogged);
-//     // model.setViewName("redirect:/home");
-//     // } else {
-//     // redirectAtts.addFlashAttribute("mensagem", "Login e/ou senha inválidos!");
-//     // model.setViewName("redirect:/auth/login");
-//     // }
+//     session.setAttribute("customer", customerLogged);
+//     model.setViewName("redirect:/home");
+//     } else {
+//     redirectAtts.addFlashAttribute("mensagem", "Login e/ou senha inválidos!");
+//     model.setViewName("redirect:/auth/login");
+//     }
 
-//     // return model;
-//     // }
+//     return model;
+//     }
 
-//     // private CustomerResponseDTO credentialValidateLogin(CustomerLoginDTO
-//     // customerLogin){
-//     // Optional<Customer> customerTarget =
-//     // repository.findByEmail(customerLogin.getEmail());
-//     // boolean isValid = false;
-//     // if(customerTarget.isPresent()){
-//     // if(passwordEcorder.matches(new Customer(customerTarget),
-//     // customerLogin.getPassword())){
-//     // isValid = true;
-//     // CustomerResponseDTO customerLogged = new CustomerResponseDTO(customerTarget);
-//     // return customerLogged;
-//     // }
-//     // }
-//     // return null;
-//     // }
+//     private CustomerResponseDTO credentialValidateLogin(CustomerLoginDTO
+//     customerLogin){
+//     Optional<Customer> customerTarget =
+//     repository.findByEmail(customerLogin.getEmail());
+//     boolean isValid = false;
+//     if(customerTarget.isPresent()){
+//     if(passwordEcorder.matches(new Customer(customerTarget),
+//     customerLogin.getPassword())){
+//     isValid = true;
+//     CustomerResponseDTO customerLogged = new CustomerResponseDTO(customerTarget);
+//     return customerLogged;
+//     }
+//     }
+//     return null;
+//     }
 // }
